@@ -37,7 +37,7 @@ class KelkooPremiumDE extends CSVPluginGenerator
     }
 
     /**
-     * @param RecordList $resultData
+     * @param array $resultData
      * @param array $formatSettings
      * @param array $filter
      */
