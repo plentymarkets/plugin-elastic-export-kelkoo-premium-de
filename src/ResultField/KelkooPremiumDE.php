@@ -108,14 +108,19 @@ class KelkooPremiumDE extends ResultFields
                 'variation.model',
 
                 //images
-                'images.item.type',
+                'images.item.urlMiddle',
+                'images.item.urlPreview',
+                'images.item.urlSecondPreview',
+                'images.item.url',
                 'images.item.path',
                 'images.item.position',
-                'images.item.fileType',
-                'images.variation.type',
+
+                'images.variation.urlMiddle',
+                'images.variation.urlPreview',
+                'images.variation.urlSecondPreview',
+                'images.variation.url',
                 'images.variation.path',
                 'images.variation.position',
-                'images.variation.fileType',
 
                 //unit
                 'unit.content',
