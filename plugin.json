@@ -16,7 +16,10 @@
   "categories": [
     "3523"
   ],
-  "version": "1.0.2",
+  "version": "1.0.3",
+  "dependencies": {
+    "ElasticExport": ">=1.0.18"
+  },
   "marketplaceName": {
     "de": "KelkooPremium",
     "en": "KelkooPremium"
