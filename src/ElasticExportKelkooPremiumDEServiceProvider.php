@@ -19,7 +19,8 @@ class ElasticExportKelkooPremiumDEServiceProvider extends DataExchangeServicePro
             'ElasticExportKelkooPremiumDE\ResultField\KelkooPremiumDE',
             'ElasticExportKelkooPremiumDE\Generator\KelkooPremiumDE',
             '',
-            true
+            true,
+			true
         );
     }
 }
