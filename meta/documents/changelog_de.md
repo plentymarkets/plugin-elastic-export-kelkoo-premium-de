@@ -1,5 +1,10 @@
 # Release Notes für Elastic Export kelkoo.de
 
+## v1.0.4 (2017-06-28)
+
+### Geändert
+- Die Logik des Generators wurde angepasst, um die Performance und Stabilität zu verbessern.
+
 ## v1.0.3 (2017-05-29)
 
 ### Geändert

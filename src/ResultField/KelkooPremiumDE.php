@@ -5,14 +5,21 @@ namespace ElasticExportKelkooPremiumDE\ResultField;
 use Plenty\Modules\DataExchange\Contracts\ResultFields;
 use Plenty\Modules\DataExchange\Models\FormatSetting;
 use Plenty\Modules\Helper\Services\ArrayHelper;
+use Plenty\Modules\Item\Search\Mutators\BarcodeMutator;
 use Plenty\Modules\Item\Search\Mutators\ImageMutator;
 use Plenty\Modules\Cloud\ElasticSearch\Lib\Source\Mutator\BuiltIn\LanguageMutator;
 use Plenty\Modules\Item\Search\Mutators\DefaultCategoryMutator;
+use Plenty\Modules\Item\Search\Mutators\KeyMutator;
 
-
+/**
+ * Class KelkooPremiumDE
+ *
+ * @package ElasticExportKelkooPremiumDE\ResultField
+ */
 class KelkooPremiumDE extends ResultFields
 {
     const KELKOO_PREMIUM_DE = 6.00;
+
     /*
 	 * @var ArrayHelper
 	 */
@@ -20,6 +27,7 @@ class KelkooPremiumDE extends ResultFields
 
     /**
      * KelkooPremiumDE constructor.
+	 *
      * @param ArrayHelper $arrayHelper
      */
     public function __construct(ArrayHelper $arrayHelper)
@@ -29,6 +37,7 @@ class KelkooPremiumDE extends ResultFields
 
     /**
      * Generate result fields.
+	 *
      * @param  array $formatSettings = []
      * @return array
      */
@@ -40,6 +49,7 @@ class KelkooPremiumDE extends ResultFields
 
         $itemDescriptionFields = ['texts.urlPath'];
         $itemDescriptionFields[] = 'texts.keywords';
+		$itemDescriptionFields[] = 'texts.lang';
 
         switch($settings->get('nameId'))
         {
@@ -57,8 +67,7 @@ class KelkooPremiumDE extends ResultFields
                 break;
         }
 
-        if($settings->get('descriptionType') == 'itemShortDescription'
-            || $settings->get('previewTextType') == 'itemShortDescription')
+        if($settings->get('descriptionType') == 'itemShortDescription' || $settings->get('previewTextType') == 'itemShortDescription')
         {
             $itemDescriptionFields[] = 'texts.shortDescription';
         }
@@ -70,25 +79,52 @@ class KelkooPremiumDE extends ResultFields
         {
             $itemDescriptionFields[] = 'texts.description';
         }
+
         $itemDescriptionFields[] = 'texts.technicalData';
 
-        //Mutator
+        // Mutator
+
+		/**
+		 * @var KeyMutator $keyMutator
+		 */
+		$keyMutator = pluginApp(KeyMutator::class);
+
+		if($keyMutator instanceof KeyMutator)
+		{
+			$keyMutator->setKeyList($this->getKeyList());
+			$keyMutator->setNestedKeyList($this->getNestedKeyList());
+		}
+
         /**
          * @var ImageMutator $imageMutator
          */
-        $imageMutator = pluginApp(ImageMutator::class);
+		$imageMutator = pluginApp(ImageMutator::class);
+
         if($imageMutator instanceof ImageMutator)
         {
             $imageMutator->addMarket($reference);
         }
+
+		/**
+		 * @var BarcodeMutator $barcodeMutator
+		 */
+		$barcodeMutator = pluginApp(BarcodeMutator::class);
+
+		if($barcodeMutator instanceof BarcodeMutator)
+		{
+			$barcodeMutator->addMarket($reference);
+		}
+
         /**
          * @var LanguageMutator $languageMutator
          */
         $languageMutator = pluginApp(LanguageMutator::class, [[$settings->get('lang')]]);
+
         /**
          * @var DefaultCategoryMutator $defaultCategoryMutator
          */
         $defaultCategoryMutator = pluginApp(DefaultCategoryMutator::class);
+
         if($defaultCategoryMutator instanceof DefaultCategoryMutator)
         {
             $defaultCategoryMutator->setPlentyId($settings->get('plentyId'));
@@ -138,8 +174,10 @@ class KelkooPremiumDE extends ResultFields
             ],
 
             [
+            	$keyMutator,
                 $languageMutator,
-                $defaultCategoryMutator
+                $defaultCategoryMutator,
+				$barcodeMutator
             ],
         ];
 
@@ -155,4 +193,101 @@ class KelkooPremiumDE extends ResultFields
 
         return $fields;
     }
+
+	/**
+	 * @return array
+	 */
+	private function getKeyList():array
+	{
+		$keyList = [
+			//item
+			'item.id',
+			'item.manufacturer.id',
+
+			//variation
+			'variation.availability.id',
+			'variation.stockLimitation',
+			'variation.vatId',
+			'variation.model',
+			'variation.isMain',
+			'variation.id',
+
+			//unit
+			'unit.content',
+			'unit.id',
+		];
+
+		return $keyList;
+	}
+
+	/**
+	 * @return array
+	 */
+	private function getNestedKeyList():array
+	{
+		$nestedKeyList['keys'] = [
+			//images
+			'images.all',
+
+			//sku
+			'skus',
+
+			//texts
+			'texts',
+
+			//defaultCategories
+			'defaultCategories',
+
+			//barcodes
+			'barcodes',
+
+			//attributes
+			'attributes',
+		];
+
+		$nestedKeyList['nestedKeys'] = [
+			'images.all' => [
+				'urlMiddle',
+				'urlPreview',
+				'urlSecondPreview',
+				'url',
+				'path',
+				'position',
+			],
+
+			'skus' => [
+				'sku'
+			],
+
+			'texts'  => [
+				'urlPath',
+				'name1',
+				'name2',
+				'name3',
+				'shortDescription',
+				'description',
+				'technicalData',
+				'lang'
+			],
+
+			'defaultCategories' => [
+				'id'
+			],
+
+			'barcodes'  => [
+				'code',
+				'type',
+			],
+
+			'attributes'   => [
+				'attributeValueSetId',
+			],
+
+			'properties'    => [
+				'property.id',
+			]
+		];
+
+		return $nestedKeyList;
+	}
 }
