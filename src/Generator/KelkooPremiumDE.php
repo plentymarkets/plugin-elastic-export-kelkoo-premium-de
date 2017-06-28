@@ -194,7 +194,7 @@ class KelkooPremiumDE extends CSVPluginGenerator
 			'image'		    => $this->elasticExportHelper->getMainImage($item, $settings),
 			'availability'  => $this->elasticExportHelper->getAvailability($item, $settings),
 			'offerid'       => $item['id'],
-			'unitaryPrice'  => $this->elasticExportPriceHelper->getBasePrice($item, $priceList['price']),
+			'unitaryPrice'  => $this->elasticExportPriceHelper->getBasePrice($item, (float)$priceList['price']),
 			'ean'           => $this->elasticExportHelper->getBarcodeByType($item, $settings->get('barcode')),
 		];
 
