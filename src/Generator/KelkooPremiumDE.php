@@ -44,7 +44,7 @@ class KelkooPremiumDE extends CSVPluginGenerator
     protected function generatePluginContent($resultData, array $formatSettings = [], array $filter = [])
     {
         $this->elasticExportHelper = pluginApp(ElasticExportCoreHelper::class);
-        if(is_array($resultData['documents']) && count($resultData['documents']) > 0)
+        if(is_array($resultData['documents']) && count($resultData['documents'] ?? []) > 0)
         {
             $settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
 
@@ -74,7 +74,7 @@ class KelkooPremiumDE extends CSVPluginGenerator
             }
             
             //Get the missing fields in ES from IDL
-            if(is_array($variationIdList) && count($variationIdList) > 0)
+            if(is_array($variationIdList) && count($variationIdList ?? []) > 0)
             {
                 /**
                  * @var \ElasticExportKelkooPremiumDE\IDL_ResultList\KelkooPremiumDE $idlResultList
