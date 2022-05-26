@@ -1,5 +1,11 @@
 # Release Notes for Elastic Export kelkoo.de
 
+## v1.0.4 (2022-05-26)
+
+### Changed
+- UPDATE - Additional updates to ensure compatibility with PHP 8.
+
+
 ## v1.0.3 (2017-05-29)
 
 ### Changed
